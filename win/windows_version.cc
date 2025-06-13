@@ -5,6 +5,7 @@
 #include "base/win/windows_version.h"
 
 #include <windows.h>
+#include "wow64apiset.h"
 
 #include <memory>
 #include <tuple>
@@ -137,7 +138,7 @@ bool OSInfo::IsRunningEmulatedOnArm64() {
   // If we're running native ARM64 then we aren't running emulated.
   return false;
 #else
-  using IsWow64Process2Function = decltype(&IsWow64Process2);
+  /*using IsWow64Process2Function = decltype(&IsWow64Process2);
 
   IsWow64Process2Function is_wow64_process2 =
       reinterpret_cast<IsWow64Process2Function>(::GetProcAddress(
@@ -154,7 +155,7 @@ bool OSInfo::IsRunningEmulatedOnArm64() {
   }
   if (native_machine == IMAGE_FILE_MACHINE_ARM64) {
     return true;
-  }
+  }*/
   return false;
 #endif
 }
@@ -480,7 +481,7 @@ void OSInfo::InitializeWowStatusValuesFromLegacyApi(HANDLE process_handle) {
 }
 
 void OSInfo::InitializeWowStatusValuesForProcess(HANDLE process_handle) {
-  static const auto is_wow64_process2 =
+  /*static const auto is_wow64_process2 =
       reinterpret_cast<decltype(&IsWow64Process2)>(::GetProcAddress(
           ::GetModuleHandle(L"kernel32.dll"), "IsWow64Process2"));
   if (!is_wow64_process2) {
@@ -494,7 +495,7 @@ void OSInfo::InitializeWowStatusValuesForProcess(HANDLE process_handle) {
     return;
   }
   wow_process_machine_ = GetWowProcessMachineArchitecture(process_machine);
-  wow_native_machine_ = GetWowNativeMachineArchitecture(native_machine);
+  wow_native_machine_ = GetWowNativeMachineArchitecture(native_machine);*/
 }
 
 }  // namespace win

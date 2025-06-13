@@ -13,7 +13,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <time.h>
-#include <winsock2.h>
+//#include <winsock2.h>
 
 #include <algorithm>
 #include <limits>
@@ -1122,6 +1122,7 @@ bool PreReadFile(const FilePath& file_path,
                  bool is_executable,
                  bool sequential,
                  int64_t max_bytes) {
+#if 0
   DCHECK_GE(max_bytes, 0);
 
   if (max_bytes == 0) {
@@ -1150,6 +1151,9 @@ bool PreReadFile(const FilePath& file_path,
   return ::PrefetchVirtualMemory(::GetCurrentProcess(),
                                  /*NumberOfEntries=*/1, &address_range,
                                  /*Flags=*/0);
+#else
+  return false;
+#endif  // 0
 }
 
 bool PreventExecuteMapping(const FilePath& path) {

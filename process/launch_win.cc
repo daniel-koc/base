@@ -287,8 +287,8 @@ Process LaunchProcess(const CommandLine::StringType& cmdline,
   if (options.disable_cetcompat &&
       base::win::GetVersion() >= base::win::Version::WIN10_20H1) {
     DCHECK_GT(attribute_count, 0u);
-    process_mitigations[1] |=
-        PROCESS_CREATION_MITIGATION_POLICY2_CET_USER_SHADOW_STACKS_ALWAYS_OFF;
+    /*process_mitigations[1] |=
+        PROCESS_CREATION_MITIGATION_POLICY2_CET_USER_SHADOW_STACKS_ALWAYS_OFF;*/
     if (!startup_info_wrapper.UpdateProcThreadAttribute(
             PROC_THREAD_ATTRIBUTE_MITIGATION_POLICY, &process_mitigations[0],
             sizeof(process_mitigations))) {

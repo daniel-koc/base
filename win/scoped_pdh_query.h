@@ -5,6 +5,7 @@
 #ifndef BASE_WIN_SCOPED_PDH_QUERY_H_
 #define BASE_WIN_SCOPED_PDH_QUERY_H_
 
+#include <windows.h>
 #include <lm.h>
 #include <pdh.h>
 

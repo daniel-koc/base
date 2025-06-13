@@ -10,7 +10,7 @@
 #include <devguid.h>
 #include <poclass.h>
 #include <setupapi.h>
-#include <winioctl.h>
+//#include <winioctl.h>
 
 #include <algorithm>
 #include <array>

@@ -238,10 +238,16 @@ class BASE_EXPORT NotReachedNoreturnError : public CheckError {
 
 #define CHECK_WILL_STREAM() true
 
+#ifdef CHECK
+#undef CHECK
+#endif
 #define CHECK(condition, ...)                                           \
   LOGGING_CHECK_FUNCTION_IMPL(::logging::CheckError::Check(#condition), \
                               condition)
 
+#ifdef PCHECK
+#undef PCHECK
+#endif
 #define PCHECK(condition)                                                \
   LOGGING_CHECK_FUNCTION_IMPL(::logging::CheckError::PCheck(#condition), \
                               condition)
@@ -259,7 +265,13 @@ class BASE_EXPORT NotReachedNoreturnError : public CheckError {
 
 #else
 
+#ifdef DCHECK
+#undef DCHECK
+#endif
 #define DCHECK(condition) EAT_CHECK_STREAM_PARAMS(!(condition))
+#ifdef DPCHECK
+#undef DPCHECK
+#endif
 #define DPCHECK(condition) EAT_CHECK_STREAM_PARAMS(!(condition))
 
 #endif  // DCHECK_IS_ON()

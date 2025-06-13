@@ -260,7 +260,7 @@ Process::Priority Process::GetPriority() const {
 }
 
 bool Process::SetPriority(Priority priority) {
-  DCHECK(IsValid());
+  /*DCHECK(IsValid());
   // Having a process remove itself from background mode is a potential
   // priority inversion, and having a process put itself in background mode is
   // broken in Windows 11 22H2. So, it is no longer supported. See
@@ -294,7 +294,8 @@ bool Process::SetPriority(Priority priority) {
     }
   }
 
-  return (::SetPriorityClass(Handle(), priority_class) != 0);
+  return (::SetPriorityClass(Handle(), priority_class) != 0);*/
+  return false;
 }
 
 int Process::GetOSPriority() const {

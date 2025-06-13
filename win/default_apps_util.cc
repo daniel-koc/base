@@ -19,7 +19,7 @@ namespace {
 // Returns the target used as a activate parameter when opening the settings
 // pointing to the page that is the most relevant to a user trying to change the
 // default handler for `protocol`.
-std::wstring GetTargetForDefaultAppsSettings(std::wstring_view protocol) {
+/*std::wstring GetTargetForDefaultAppsSettings(std::wstring_view protocol) {
   static std::wstring_view kSystemSettingsDefaultAppsPrefix(
       L"SystemSettings_DefaultApps_");
   if (base::EqualsCaseInsensitiveASCII(protocol, L"http"))
@@ -27,7 +27,7 @@ std::wstring GetTargetForDefaultAppsSettings(std::wstring_view protocol) {
   if (base::EqualsCaseInsensitiveASCII(protocol, L"mailto"))
     return base::StrCat({kSystemSettingsDefaultAppsPrefix, L"Email"});
   return L"SettingsPageAppsDefaultsProtocolView";
-}
+}*/
 
 }  // namespace
 
@@ -36,7 +36,7 @@ namespace base::win {
 bool LaunchDefaultAppsSettingsModernDialog(std::wstring_view protocol) {
   // The appModelId looks arbitrary but it is the same in Win8 and Win10. There
   // is no easy way to retrieve the appModelId from the registry.
-  static constexpr wchar_t kControlPanelAppModelId[] =
+  /*static constexpr wchar_t kControlPanelAppModelId[] =
       L"windows.immersivecontrolpanel_cw5n1h2txyewy"
       L"!microsoft.windows.immersivecontrolpanel";
 
@@ -62,6 +62,8 @@ bool LaunchDefaultAppsSettingsModernDialog(std::wstring_view protocol) {
           .c_str(),
       AO_NONE, &pid);
   return SUCCEEDED(hr);
+*/
+  return false;
 }
 
 }  // namespace base::win

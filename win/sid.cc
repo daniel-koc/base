@@ -140,7 +140,7 @@ Sid Sid::FromNamedCapability(const std::wstring& capability_name) {
 #endif
   DCHECK_GE(GetVersion(), Version::WIN10);
 
-  typedef decltype(
+  /*typedef decltype(
       ::DeriveCapabilitySidsFromName)* DeriveCapabilitySidsFromNameFunc;
   static const DeriveCapabilitySidsFromNameFunc derive_capability_sids =
       []() -> DeriveCapabilitySidsFromNameFunc {
@@ -152,7 +152,7 @@ Sid Sid::FromNamedCapability(const std::wstring& capability_name) {
         ::GetProcAddress(module, "DeriveCapabilitySidsFromName"));
   }();
   if (!derive_capability_sids)
-    return Sid(WellKnownSid::kNull);
+    return Sid(WellKnownSid::kNull);*/
 
   // Pre-reserve some space for SID deleters.
   std::vector<ScopedLocalAlloc> deleter_list;
@@ -163,11 +163,11 @@ Sid Sid::FromNamedCapability(const std::wstring& capability_name) {
   PSID* capability_sids = nullptr;
   DWORD capability_sid_count = 0;
 
-  if (!derive_capability_sids(capability_name.c_str(), &capability_groups,
+  /*if (!derive_capability_sids(capability_name.c_str(), &capability_groups,
                               &capability_group_count, &capability_sids,
                               &capability_sid_count)) {
     return Sid(WellKnownSid::kNull);
-  }
+  }*/
 
   deleter_list.emplace_back(capability_groups);
   deleter_list.emplace_back(capability_sids);

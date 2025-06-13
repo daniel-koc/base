@@ -195,11 +195,29 @@ DEFINE_CHECK_OP_IMPL(LT, < )
 DEFINE_CHECK_OP_IMPL(GE, >=)
 DEFINE_CHECK_OP_IMPL(GT, > )
 #undef DEFINE_CHECK_OP_IMPL
+#ifdef CHECK_EQ
+#undef CHECK_EQ
+#endif
 #define CHECK_EQ(val1, val2, ...) CHECK_OP(EQ, ==, val1, val2)
+#ifdef CHECK_NE
+#undef CHECK_NE
+#endif
 #define CHECK_NE(val1, val2, ...) CHECK_OP(NE, !=, val1, val2)
+#ifdef CHECK_LE
+#undef CHECK_LE
+#endif
 #define CHECK_LE(val1, val2, ...) CHECK_OP(LE, <=, val1, val2)
+#ifdef CHECK_LT
+#undef CHECK_LT
+#endif
 #define CHECK_LT(val1, val2, ...) CHECK_OP(LT, < , val1, val2)
+#ifdef CHECK_GE
+#undef CHECK_GE
+#endif
 #define CHECK_GE(val1, val2, ...) CHECK_OP(GE, >=, val1, val2)
+#ifdef CHECK_GT
+#undef CHECK_GT
+#endif
 #define CHECK_GT(val1, val2, ...) CHECK_OP(GT, > , val1, val2)
 // clang-format on
 
@@ -218,11 +236,29 @@ DEFINE_CHECK_OP_IMPL(GT, > )
 #endif
 
 // clang-format off
+#ifdef DCHECK_EQ
+#undef DCHECK_EQ
+#endif
 #define DCHECK_EQ(val1, val2) DCHECK_OP(EQ, ==, val1, val2)
+#ifdef DCHECK_NE
+#undef DCHECK_NE
+#endif
 #define DCHECK_NE(val1, val2) DCHECK_OP(NE, !=, val1, val2)
+#ifdef DCHECK_LE
+#undef DCHECK_LE
+#endif
 #define DCHECK_LE(val1, val2) DCHECK_OP(LE, <=, val1, val2)
+#ifdef DCHECK_LT
+#undef DCHECK_LT
+#endif
 #define DCHECK_LT(val1, val2) DCHECK_OP(LT, < , val1, val2)
+#ifdef DCHECK_GE
+#undef DCHECK_GE
+#endif
 #define DCHECK_GE(val1, val2) DCHECK_OP(GE, >=, val1, val2)
+#ifdef DCHECK_GT
+#undef DCHECK_GT
+#endif
 #define DCHECK_GT(val1, val2) DCHECK_OP(GT, > , val1, val2)
 // clang-format on
 

@@ -438,7 +438,7 @@ void SetCurrentThreadPriority(ThreadType thread_type,
   DPLOG_IF(ERROR, !cpu_priority_success)
       << "Failed to set thread priority to " << desired_priority;
 
-  if (g_background_thread_normal_memory_priority_win &&
+  /*if (g_background_thread_normal_memory_priority_win &&
       desired_priority == THREAD_MODE_BACKGROUND_BEGIN) {
     // Override the memory priority.
     MEMORY_PRIORITY_INFORMATION memory_priority{.MemoryPriority =
@@ -448,7 +448,7 @@ void SetCurrentThreadPriority(ThreadType thread_type,
                              &memory_priority, sizeof(memory_priority));
     DPLOG_IF(ERROR, !memory_priority_success)
         << "Set thread memory priority failed.";
-  }
+  }*/
 
   if (!g_use_thread_priority_lowest && thread_type == ThreadType::kBackground) {
     // In a background process, THREAD_MODE_BACKGROUND_BEGIN lowers the memory
@@ -467,7 +467,7 @@ void SetCurrentThreadPriority(ThreadType thread_type,
 
 void SetCurrentThreadQualityOfService(ThreadType thread_type) {
   // QoS and power throttling were introduced in Win10 1709.
-  bool desire_ecoqos = false;
+  /*bool desire_ecoqos = false;
   switch (thread_type) {
     case ThreadType::kBackground:
     case ThreadType::kUtility:
@@ -494,7 +494,7 @@ void SetCurrentThreadQualityOfService(ThreadType thread_type) {
       &thread_power_throttling_state, sizeof(thread_power_throttling_state));
   // Failure is expected on versions of Windows prior to RS3.
   DPLOG_IF(ERROR, !success && win::GetVersion() >= win::Version::WIN10_RS3)
-      << "Failed to set EcoQoS to " << std::boolalpha << desire_ecoqos;
+      << "Failed to set EcoQoS to " << std::boolalpha << desire_ecoqos;*/
 }
 
 }  // namespace

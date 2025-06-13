@@ -426,7 +426,7 @@ bool DiscardableSharedMemory::Purge(Time current_time) {
 #elif BUILDFLAG(IS_WIN)
   // On Windows, discarded pages are not returned to the system immediately and
   // not guaranteed to be zeroed when returned to the application.
-  char* address = static_cast<char*>(shared_memory_mapping_.memory()) +
+  /*char* address = static_cast<char*>(shared_memory_mapping_.memory()) +
                   AlignToPageSize(sizeof(SharedState));
   size_t length = AlignToPageSize(mapped_size_);
 
@@ -436,7 +436,7 @@ bool DiscardableSharedMemory::Purge(Time current_time) {
   if (ret != ERROR_SUCCESS) {
     void* ptr = VirtualAlloc(address, length, MEM_RESET, PAGE_READWRITE);
     CHECK(ptr);
-  }
+  }*/
 #elif BUILDFLAG(IS_FUCHSIA)
   // De-commit via our VMAR, rather than relying on the VMO handle, since the
   // handle may have been closed after the memory was mapped into this process.

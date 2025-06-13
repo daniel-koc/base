@@ -92,6 +92,7 @@ bool SetPropVariantValueForPropertyStore(
 }
 
 void __cdecl ForceCrashOnSigAbort(int) {
+#if 0
   *((volatile int*)nullptr) = 0x1337;
 }
 
@@ -99,6 +100,7 @@ void __cdecl ForceCrashOnSigAbort(int) {
 // API for that.
 POWER_PLATFORM_ROLE GetPlatformRole() {
   return PowerDeterminePlatformRoleEx(POWER_PLATFORM_ROLE_V2);
+#endif  // 0
 }
 
 // Enable V2 per-monitor high-DPI support for the process. This will cause
@@ -106,6 +108,7 @@ POWER_PLATFORM_ROLE GetPlatformRole() {
 // area owned by this process on a per-monitor basis. If per-monitor V2 is not
 // available (i.e., prior to Windows 10 1703) or fails, returns false.
 // https://docs.microsoft.com/en-us/windows/desktop/hidpi/dpi-awareness-context
+#if 0
 bool EnablePerMonitorV2() {
   if (!IsUser32AndGdi32Available())
     return false;
@@ -124,6 +127,7 @@ bool EnablePerMonitorV2() {
 
   return false;
 }
+#endif  // 0
 
 bool* GetDomainEnrollmentStateStorage() {
   static bool state = IsOS(OS_DOMAINMEMBER);
@@ -131,6 +135,7 @@ bool* GetDomainEnrollmentStateStorage() {
 }
 
 bool* GetRegisteredWithManagementStateStorage() {
+#if 0
   static bool state = []() {
     // Mitigate the issues caused by loading DLLs on a background thread
     // (http://crbug/973868).
@@ -157,10 +162,14 @@ bool* GetRegisteredWithManagementStateStorage() {
   }();
 
   return &state;
+#else
+  return nullptr;
+#endif  // 0
 }
 
 // TODO (crbug/1300219): return a DSREG_JOIN_TYPE* instead of bool*.
 bool* GetAzureADJoinStateStorage() {
+#if 0
   static bool state = []() {
     base::ElapsedTimer timer;
 
@@ -197,6 +206,9 @@ bool* GetAzureADJoinStateStorage() {
     return is_aad_joined;
   }();
   return &state;
+#else
+  return nullptr;
+#endif  // 0
 }
 
 NativeLibrary PinUser32Internal(NativeLibraryLoadError* error) {
@@ -216,6 +228,7 @@ NativeLibrary PinUser32Internal(NativeLibraryLoadError* error) {
 // it to always return UserInteractionMode_Touch which as per documentation
 // indicates tablet mode.
 bool IsWindows10OrGreaterTabletMode(HWND hwnd) {
+#if 0
   if (GetVersion() >= Version::WIN11) {
     // Only Win10 supports explicit tablet mode. On Win11,
     // get_UserInteractionMode always returns UserInteractionMode_Mouse, so
@@ -256,6 +269,9 @@ bool IsWindows10OrGreaterTabletMode(HWND hwnd) {
       ABI::Windows::UI::ViewManagement::UserInteractionMode_Mouse;
   view_settings->get_UserInteractionMode(&mode);
   return mode == ABI::Windows::UI::ViewManagement::UserInteractionMode_Touch;
+#else
+  return false;
+#endif  // 0
 }
 
 // Returns true if a physical keyboard is detected on Windows 8 and up.
@@ -264,6 +280,7 @@ bool IsWindows10OrGreaterTabletMode(HWND hwnd) {
 // it won't work if there are devices which expose keyboard interfaces which
 // are attached to the machine.
 bool IsKeyboardPresentOnSlate(HWND hwnd, std::string* reason) {
+#if 0
   bool result = false;
 
   if (CommandLine::ForCurrentProcess()->HasSwitch(
@@ -379,6 +396,9 @@ bool IsKeyboardPresentOnSlate(HWND hwnd, std::string* reason) {
     }
   }
   return result;
+#else
+  return false;
+#endif  // 0
 }
 
 static bool g_crash_on_process_detach = false;
@@ -523,6 +543,7 @@ bool IsTabletDevice(std::string* reason, HWND hwnd) {
 // input configuration of the device and can be manually triggered by the user
 // independently from the hardware state.
 bool IsDeviceUsedAsATablet(std::string* reason) {
+#if 0
   // Once this is set, it shouldn't be overridden, and it should be the ultimate
   // return value, so that this method returns the same result whether or not
   // reason is NULL.
@@ -584,6 +605,9 @@ bool IsDeviceUsedAsATablet(std::string* reason) {
     *reason += "Device role is not mobile or slate.\n";
   }
   return ret.has_value() ? ret.value() : is_tablet;
+#else
+  return false;
+#endif  // 0
 }
 
 bool IsEnrolledToDomain() {
@@ -604,6 +628,7 @@ bool IsJoinedToAzureAD() {
 }
 
 bool IsUser32AndGdi32Available() {
+#if 0
   static auto is_user32_and_gdi32_available = []() {
     // If win32k syscalls aren't disabled, then user32 and gdi32 are available.
     PROCESS_MITIGATION_SYSTEM_CALL_DISABLE_POLICY policy = {};
@@ -616,6 +641,9 @@ bool IsUser32AndGdi32Available() {
     return true;
   }();
   return is_user32_and_gdi32_available;
+#else
+  return false;
+#endif  // 0
 }
 
 bool GetLoadedModulesSnapshot(HANDLE process, std::vector<HMODULE>* snapshot) {
@@ -673,6 +701,7 @@ void DisableFlicks(HWND hwnd) {
 }
 
 void EnableHighDPISupport() {
+#if 0
   if (!IsUser32AndGdi32Available())
     return;
 
@@ -688,6 +717,7 @@ void EnableHighDPISupport() {
     BOOL result = ::SetProcessDPIAware();
     DCHECK(result) << "SetProcessDPIAware failed.";
   }
+#endif  // 0
 }
 
 std::wstring WStringFromGUID(const ::GUID& rguid) {
