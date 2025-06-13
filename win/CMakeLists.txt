@@ -12,5 +12,5 @@ add_library(pe_image STATIC
 target_INCLUDE_DIRECTORIES(pe_image
   PUBLIC
   "${CMAKE_SOURCE_DIR}/OpenFinRVM/OpenFinRVM_utilities_lib/ThirdParty/Chromium"
-  "${CMAKE_CURRENT_SOURCE_DIR}/../../gen"
+  "${CMAKE_SOURCE_DIR}/OpenFinRVM/OpenFinRVM_utilities_lib/ThirdParty/Chromium/gen"
 )

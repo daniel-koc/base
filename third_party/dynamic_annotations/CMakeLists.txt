@@ -11,5 +11,5 @@ add_library(dynamic_annotations STATIC
 target_INCLUDE_DIRECTORIES(dynamic_annotations
   PUBLIC
   "${CMAKE_SOURCE_DIR}/OpenFinRVM/OpenFinRVM_utilities_lib/ThirdParty/Chromium"
-  "${CMAKE_CURRENT_SOURCE_DIR}/../../../gen"
+  "${CMAKE_SOURCE_DIR}/OpenFinRVM/OpenFinRVM_utilities_lib/ThirdParty/Chromium/gen"
 )

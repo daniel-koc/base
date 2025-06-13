@@ -69,7 +69,7 @@ target_INCLUDE_DIRECTORIES(partition_allocator_raw_ptr
   PUBLIC
   "${CMAKE_SOURCE_DIR}/OpenFinRVM/OpenFinRVM_utilities_lib/ThirdParty/Chromium"
   "${CMAKE_CURRENT_SOURCE_DIR}/.."
-  "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../gen/base/allocator/partition_allocator/src"
+  "${CMAKE_SOURCE_DIR}/OpenFinRVM/OpenFinRVM_utilities_lib/ThirdParty/Chromium/gen/base/allocator/partition_allocator/src"
 )
 
 target_compile_definitions(partition_allocator_raw_ptr PUBLIC ${raw_ptr_defines})
@@ -303,7 +303,7 @@ target_INCLUDE_DIRECTORIES(allocator_core
   PUBLIC
   "${CMAKE_SOURCE_DIR}/OpenFinRVM/OpenFinRVM_utilities_lib/ThirdParty/Chromium"
   "${CMAKE_CURRENT_SOURCE_DIR}/.."
-  "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../gen/base/allocator/partition_allocator/src"
+  "${CMAKE_SOURCE_DIR}/OpenFinRVM/OpenFinRVM_utilities_lib/ThirdParty/Chromium/gen/base/allocator/partition_allocator/src"
 )
 
 target_compile_definitions(allocator_core
@@ -532,7 +532,7 @@ target_INCLUDE_DIRECTORIES(allocator_base
   PUBLIC
   "${CMAKE_SOURCE_DIR}/OpenFinRVM/OpenFinRVM_utilities_lib/ThirdParty/Chromium"
   "${CMAKE_CURRENT_SOURCE_DIR}/.."
-  "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../gen/base/allocator/partition_allocator/src"
+  "${CMAKE_SOURCE_DIR}/OpenFinRVM/OpenFinRVM_utilities_lib/ThirdParty/Chromium/gen/base/allocator/partition_allocator/src"
 )
 
 target_compile_definitions(allocator_base PUBLIC ${allocator_base_defines})
@@ -699,7 +699,7 @@ target_INCLUDE_DIRECTORIES(allocator_shim
   PUBLIC
   "${CMAKE_SOURCE_DIR}/OpenFinRVM/OpenFinRVM_utilities_lib/ThirdParty/Chromium"
   "${CMAKE_CURRENT_SOURCE_DIR}/.."
-  "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../gen/base/allocator/partition_allocator/src"
+  "${CMAKE_SOURCE_DIR}/OpenFinRVM/OpenFinRVM_utilities_lib/ThirdParty/Chromium/gen/base/allocator/partition_allocator/src"
 )
 
 if(APPLE)
