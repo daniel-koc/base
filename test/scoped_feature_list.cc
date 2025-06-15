@@ -19,7 +19,7 @@
 #include "base/strings/string_util.h"
 #include "base/strings/stringprintf.h"
 #include "base/test/mock_entropy_provider.h"
-#include "base/test/task_environment.h"
+//#include "base/test/task_environment.h"
 
 namespace base {
 namespace test {
@@ -314,8 +314,8 @@ void ScopedFeatureList::Reset() {
   // ScopedFeatureList Init/Reset: crbug.com/1275502#c45
   //
   // All FeatureList modifications in this file should have this as well.
-  TaskEnvironment::ParallelExecutionFence fence(
-      "ScopedFeatureList must be Reset from the test main thread");
+  //TaskEnvironment::ParallelExecutionFence fence(
+  //    "ScopedFeatureList must be Reset from the test main thread");
 
   FeatureList::ClearInstanceForTesting();
 
@@ -367,8 +367,8 @@ void ScopedFeatureList::InitWithNullFeatureAndFieldTrialLists() {
   DCHECK(!original_feature_list_);
 
   // Execution fence required while modifying FeatureList, as in Reset.
-  TaskEnvironment::ParallelExecutionFence fence(
-      "ScopedFeatureList must be Init from the test main thread");
+  //TaskEnvironment::ParallelExecutionFence fence(
+  //    "ScopedFeatureList must be Init from the test main thread");
 
   // Back up the current feature list, to be restored in Reset().
   original_feature_list_ = FeatureList::ClearInstanceForTesting();
@@ -380,8 +380,8 @@ void ScopedFeatureList::InitWithFeatureList(
   DCHECK(!original_feature_list_);
 
   // Execution fence required while modifying FeatureList, as in Reset.
-  TaskEnvironment::ParallelExecutionFence fence(
-      "ScopedFeatureList must be Init from the test main thread");
+  //TaskEnvironment::ParallelExecutionFence fence(
+  //    "ScopedFeatureList must be Init from the test main thread");
 
   original_feature_list_ = FeatureList::ClearInstanceForTesting();
   FeatureList::SetInstance(std::move(feature_list));

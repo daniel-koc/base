@@ -1792,6 +1792,12 @@ list(APPEND ldflags ${base_win_linker_ldflags})
     #@@configs += [ "//build/config/compiler:optimize_max" ]
   #}
 
+# temporary change - until we define target for tests
+list(APPEND sources
+  "test/scoped_feature_list.cc"
+  "test/scoped_feature_list.h"
+)
+
 add_library(base STATIC
   ${sources}
 )
