@@ -1798,6 +1798,28 @@ list(APPEND sources
   "test/scoped_feature_list.h"
 )
 
+# build/config/win:runtime_library:
+list(APPEND defines
+  "__STD_C"
+  "_CRT_RAND_S"
+  "_CRT_SECURE_NO_DEPRECATE"
+  "_SCL_SECURE_NO_DEPRECATE"
+  "_ATL_NO_OPENGL"
+  "_WINDOWS"
+  "CERT_CHAIN_PARA_HAS_EXTRA_FIELDS"
+  "PSAPI_VERSION=2"
+  "WIN32"
+  "_SECURE_ATL"
+  "WINAPI_FAMILY=WINAPI_FAMILY_DESKTOP_APP"
+)
+
+# build/config/win:winver:
+#list(APPEND defines
+  #"NTDDI_VERSION=NTDDI_WIN10_NI"
+  #"_WIN32_WINNT=0x0A00"
+  #"WINVER=0x0A00"
+#)
+
 add_library(base STATIC
   ${sources}
 )

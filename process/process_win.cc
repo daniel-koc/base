@@ -260,7 +260,7 @@ Process::Priority Process::GetPriority() const {
 }
 
 bool Process::SetPriority(Priority priority) {
-  /*DCHECK(IsValid());
+  DCHECK(IsValid());
   // Having a process remove itself from background mode is a potential
   // priority inversion, and having a process put itself in background mode is
   // broken in Windows 11 22H2. So, it is no longer supported. See
@@ -270,6 +270,7 @@ bool Process::SetPriority(Priority priority) {
                                    ? IDLE_PRIORITY_CLASS
                                    : NORMAL_PRIORITY_CLASS;
 
+#if (_WIN32_WINNT >= 0x0602)
   if (base::win::OSInfo::GetInstance()->version() >=
           base::win::Version::WIN11 &&
       FeatureList::IsEnabled(kUseEcoQoSForBackgroundProcess)) {
@@ -293,8 +294,9 @@ bool Process::SetPriority(Priority priority) {
       DPLOG(ERROR) << "Setting process QoS policy fails";
     }
   }
+#endif  // (_WIN32_WINNT >= 0x0602)
 
-  return (::SetPriorityClass(Handle(), priority_class) != 0);*/
+  return (::SetPriorityClass(Handle(), priority_class) != 0);
   return false;
 }
 

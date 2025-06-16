@@ -1122,7 +1122,6 @@ bool PreReadFile(const FilePath& file_path,
                  bool is_executable,
                  bool sequential,
                  int64_t max_bytes) {
-#if 0
   DCHECK_GE(max_bytes, 0);
 
   if (max_bytes == 0) {
@@ -1140,6 +1139,7 @@ bool PreReadFile(const FilePath& file_path,
     return false;
   }
 
+#if (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
   const ::SIZE_T length =
       std::min(base::saturated_cast<::SIZE_T>(max_bytes),
                base::saturated_cast<::SIZE_T>(mapped_file.length()));
@@ -1153,7 +1153,7 @@ bool PreReadFile(const FilePath& file_path,
                                  /*Flags=*/0);
 #else
   return false;
-#endif  // 0
+#endif
 }
 
 bool PreventExecuteMapping(const FilePath& path) {

@@ -226,8 +226,12 @@ CommandLine::~CommandLine() = default;
 void CommandLine::set_slash_is_not_a_switch() {
   // The last switch prefix should be slash, so adjust the size to skip it.
 #if defined(__clang__)
-  //static_assert(base::make_span(kSwitchPrefixes).back() == L"/",
-                //"Error: Last switch prefix is not a slash.");
+#if 0
+  static_assert(base::make_span(kSwitchPrefixes).back() == L"/",
+                "Error: Last switch prefix is not a slash.");
+#else
+  CHECK_EQ(base::make_span(kSwitchPrefixes).back(), L"/");
+#endif  // 0
 #endif
   switch_prefix_count = std::size(kSwitchPrefixes) - 1;
 }

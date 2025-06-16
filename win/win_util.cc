@@ -92,24 +92,24 @@ bool SetPropVariantValueForPropertyStore(
 }
 
 void __cdecl ForceCrashOnSigAbort(int) {
-#if 0
   *((volatile int*)nullptr) = 0x1337;
 }
 
 // Returns the current platform role. We use the PowerDeterminePlatformRoleEx
 // API for that.
+#if (NTDDI_VERSION >= NTDDI_WIN8)
 POWER_PLATFORM_ROLE GetPlatformRole() {
   return PowerDeterminePlatformRoleEx(POWER_PLATFORM_ROLE_V2);
-#endif  // 0
 }
+#endif  // (NTDDI_VERSION >= NTDDI_WIN8)
 
 // Enable V2 per-monitor high-DPI support for the process. This will cause
 // Windows to scale dialogs, comctl32 controls, context menus, and non-client
 // area owned by this process on a per-monitor basis. If per-monitor V2 is not
 // available (i.e., prior to Windows 10 1703) or fails, returns false.
 // https://docs.microsoft.com/en-us/windows/desktop/hidpi/dpi-awareness-context
-#if 0
 bool EnablePerMonitorV2() {
+#if(WINVER >= 0x0605)
   if (!IsUser32AndGdi32Available())
     return false;
 
@@ -124,10 +124,10 @@ bool EnablePerMonitorV2() {
   DCHECK_LT(GetVersion(), Version::WIN10_RS2)
       << "SetProcessDpiAwarenessContext should be available on all platforms"
          " >= Windows 10 Redstone 2";
+#endif  // (WINVER >= 0x0605)
 
   return false;
 }
-#endif  // 0
 
 bool* GetDomainEnrollmentStateStorage() {
   static bool state = IsOS(OS_DOMAINMEMBER);
@@ -135,7 +135,6 @@ bool* GetDomainEnrollmentStateStorage() {
 }
 
 bool* GetRegisteredWithManagementStateStorage() {
-#if 0
   static bool state = []() {
     // Mitigate the issues caused by loading DLLs on a background thread
     // (http://crbug/973868).
@@ -146,6 +145,7 @@ bool* GetRegisteredWithManagementStateStorage() {
     if (!library.is_valid())
       return false;
 
+#if (NTDDI_VERSION >= NTDDI_WINBLUE)
     using IsDeviceRegisteredWithManagementFunction =
         decltype(&::IsDeviceRegisteredWithManagement);
     IsDeviceRegisteredWithManagementFunction
@@ -159,12 +159,12 @@ bool* GetRegisteredWithManagementStateStorage() {
     HRESULT hr =
         is_device_registered_with_management_function(&is_managed, 0, nullptr);
     return SUCCEEDED(hr) && is_managed;
+#else
+    return false;
+#endif  // (NTDDI_VERSION >= NTDDI_WINBLUE)
   }();
 
   return &state;
-#else
-  return nullptr;
-#endif  // 0
 }
 
 // TODO (crbug/1300219): return a DSREG_JOIN_TYPE* instead of bool*.
@@ -584,6 +584,7 @@ bool IsDeviceUsedAsATablet(std::string* reason) {
       return ret.has_value() ? ret.value() : false;
   }
 
+#if (NTDDI_VERSION >= NTDDI_WIN8)
   // PlatformRoleSlate was added in Windows 8+.
   POWER_PLATFORM_ROLE role = GetPlatformRole();
   bool is_tablet = false;
@@ -601,7 +602,9 @@ bool IsDeviceUsedAsATablet(std::string* reason) {
       *reason += (role == PlatformRoleMobile) ? "PlatformRoleMobile\n"
                                               : "PlatformRoleSlate\n";
     }
-  } else if (reason) {
+  } else 
+#endif  // (NTDDI_VERSION >= NTDDI_WIN8)
+if (reason) {
     *reason += "Device role is not mobile or slate.\n";
   }
   return ret.has_value() ? ret.value() : is_tablet;
@@ -701,7 +704,6 @@ void DisableFlicks(HWND hwnd) {
 }
 
 void EnableHighDPISupport() {
-#if 0
   if (!IsUser32AndGdi32Available())
     return;
 
@@ -709,6 +711,7 @@ void EnableHighDPISupport() {
   if (EnablePerMonitorV2())
     return;
 
+#if (NTDDI_VERSION >= NTDDI_WINBLUE)
   // Fall back to per-monitor DPI for older versions of Win10.
   PROCESS_DPI_AWARENESS process_dpi_awareness = PROCESS_PER_MONITOR_DPI_AWARE;
   if (!::SetProcessDpiAwareness(process_dpi_awareness)) {
@@ -717,7 +720,7 @@ void EnableHighDPISupport() {
     BOOL result = ::SetProcessDPIAware();
     DCHECK(result) << "SetProcessDPIAware failed.";
   }
-#endif  // 0
+#endif  // (NTDDI_VERSION >= NTDDI_WINBLUE)
 }
 
 std::wstring WStringFromGUID(const ::GUID& rguid) {

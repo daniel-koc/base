@@ -426,17 +426,21 @@ bool DiscardableSharedMemory::Purge(Time current_time) {
 #elif BUILDFLAG(IS_WIN)
   // On Windows, discarded pages are not returned to the system immediately and
   // not guaranteed to be zeroed when returned to the application.
-  /*char* address = static_cast<char*>(shared_memory_mapping_.memory()) +
+  char* address = static_cast<char*>(shared_memory_mapping_.memory()) +
                   AlignToPageSize(sizeof(SharedState));
   size_t length = AlignToPageSize(mapped_size_);
 
+#if (_WIN32_WINNT >= _WIN32_WINNT_WINBLUE) && ((NTDDI_VERSION > NTDDI_WINBLUE) || (NTDDI_VERSION == NTDDI_WINBLUE && defined(WINBLUE_KBSPRING14)))
   DWORD ret = DiscardVirtualMemory(address, length);
   // DiscardVirtualMemory is buggy in Win10 SP0, so fall back to MEM_RESET on
   // failure.
   if (ret != ERROR_SUCCESS) {
+#endif
     void* ptr = VirtualAlloc(address, length, MEM_RESET, PAGE_READWRITE);
     CHECK(ptr);
-  }*/
+#if (_WIN32_WINNT >= _WIN32_WINNT_WINBLUE) && ((NTDDI_VERSION > NTDDI_WINBLUE) || (NTDDI_VERSION == NTDDI_WINBLUE && defined(WINBLUE_KBSPRING14)))
+  }
+#endif
 #elif BUILDFLAG(IS_FUCHSIA)
   // De-commit via our VMAR, rather than relying on the VMO handle, since the
   // handle may have been closed after the memory was mapped into this process.

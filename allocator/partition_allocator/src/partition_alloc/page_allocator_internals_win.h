@@ -14,12 +14,6 @@
 #include "partition_alloc/partition_alloc_buildflags.h"
 #include "partition_alloc/partition_alloc_check.h"
 
-#if BUILDFLAG(IS_WIN)
-#include <windows.h>
-// Must be after <windows.h>
-#include <memoryapi.h>
-#endif
-
 namespace partition_alloc::internal {
 
 // |VirtualAlloc| will fail if allocation at the hint address is blocked.
@@ -233,15 +227,19 @@ bool TryRecommitSystemPagesInternal(
 }
 
 void DiscardSystemPagesInternal(uintptr_t address, size_t length) {
-  /*void* ptr = reinterpret_cast<void*>(address);
+  void* ptr = reinterpret_cast<void*>(address);
   // Use DiscardVirtualMemory when available because it releases faster than
   // MEM_RESET.
+#if (_WIN32_WINNT >= _WIN32_WINNT_WINBLUE) && ((NTDDI_VERSION > NTDDI_WINBLUE) || (NTDDI_VERSION == NTDDI_WINBLUE && defined(WINBLUE_KBSPRING14)))
   DWORD ret = DiscardVirtualMemory(ptr, length);
   // DiscardVirtualMemory is buggy in Win10 SP0, so fall back to MEM_RESET on
   // failure.
   if (ret) {
     PA_CHECK(VirtualAllocWithRetry(ptr, length, MEM_RESET, PAGE_READWRITE));
-  }*/
+  }
+#else
+  PA_CHECK(VirtualAllocWithRetry(ptr, length, MEM_RESET, PAGE_READWRITE));
+#endif
 }
 
 }  // namespace partition_alloc::internal

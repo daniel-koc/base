@@ -1042,7 +1042,7 @@ auto as_writable_chars(span<T, X> s) noexcept {
 // `size` many elements or Undefined Behaviour may result as the span may give
 // access beyond the bounds of the collection pointed to by `it`.
 template <int&... ExplicitArgumentBarrier, typename It>
-/*UNSAFE_BUFFER_USAGE*/ constexpr auto make_span(
+UNSAFE_BUFFER_USAGE constexpr auto make_span(
     It it,
     StrictNumeric<size_t> size) noexcept {
   using T = std::remove_reference_t<std::iter_reference_t<It>>;
@@ -1064,7 +1064,7 @@ template <int&... ExplicitArgumentBarrier,
           typename It,
           typename End,
           typename = std::enable_if_t<!std::is_convertible_v<End, size_t>>>
-/*UNSAFE_BUFFER_USAGE*/ constexpr auto make_span(It it, End end) noexcept {
+UNSAFE_BUFFER_USAGE constexpr auto make_span(It it, End end) noexcept {
   using T = std::remove_reference_t<std::iter_reference_t<It>>;
   // SAFETY: The caller guarantees that `it` and `end` are iterators of the
   // same allocation.
@@ -1104,7 +1104,7 @@ constexpr auto make_span(Container&& container) noexcept {
 // `size` many elements or Undefined Behaviour may result as the span may give
 // access beyond the bounds of the collection pointed to by `it`.
 template <size_t N, int&... ExplicitArgumentBarrier, typename It>
-/*UNSAFE_BUFFER_USAGE*/ constexpr auto make_span(
+UNSAFE_BUFFER_USAGE constexpr auto make_span(
     It it,
     StrictNumeric<size_t> size) noexcept {
   using T = std::remove_reference_t<std::iter_reference_t<It>>;
@@ -1141,7 +1141,7 @@ template <size_t N,
           typename It,
           typename End,
           typename = std::enable_if_t<!std::is_convertible_v<End, size_t>>>
-/*UNSAFE_BUFFER_USAGE*/ constexpr auto make_span(It it, End end) noexcept {
+UNSAFE_BUFFER_USAGE constexpr auto make_span(It it, End end) noexcept {
   using T = std::remove_reference_t<std::iter_reference_t<It>>;
   // SAFETY: The caller guarantees that `it` and `end` are iterators of the
   // same allocation.

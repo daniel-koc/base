@@ -61,6 +61,28 @@ message("@@CMAKE_CXX_FLAGS...............: ${CMAKE_CXX_FLAGS}")
 message("@@CMAKE_EXE_LINKER_FLAGS...............: ${CMAKE_EXE_LINKER_FLAGS}")
 message("@@CMAKE_STATIC_LINKER_FLAGS...............: ${CMAKE_STATIC_LINKER_FLAGS}")
 
+# build/config/win:runtime_library:
+list(APPEND raw_ptr_defines
+  "__STD_C"
+  "_CRT_RAND_S"
+  "_CRT_SECURE_NO_DEPRECATE"
+  "_SCL_SECURE_NO_DEPRECATE"
+  "_ATL_NO_OPENGL"
+  "_WINDOWS"
+  "CERT_CHAIN_PARA_HAS_EXTRA_FIELDS"
+  "PSAPI_VERSION=2"
+  "WIN32"
+  "_SECURE_ATL"
+  "WINAPI_FAMILY=WINAPI_FAMILY_DESKTOP_APP"
+)
+
+# build/config/win:winver:
+#list(APPEND raw_ptr_defines
+  #"NTDDI_VERSION=NTDDI_WIN10_NI"
+  #"_WIN32_WINNT=0x0A00"
+  #"WINVER=0x0A00"
+#)
+
 add_library(partition_allocator_raw_ptr STATIC "")
 
 target_sources(partition_allocator_raw_ptr PRIVATE ${raw_ptr_sources} PUBLIC ${raw_ptr_public})
@@ -295,6 +317,28 @@ rvm_add_TARGET_compile_option("partition_allocator_raw_ptr" "-Wno-float-conversi
       #configs += [ ":no_stack_protector" ]
     #}
 
+# build/config/win:runtime_library:
+list(APPEND allocator_core_defines
+  "__STD_C"
+  "_CRT_RAND_S"
+  "_CRT_SECURE_NO_DEPRECATE"
+  "_SCL_SECURE_NO_DEPRECATE"
+  "_ATL_NO_OPENGL"
+  "_WINDOWS"
+  "CERT_CHAIN_PARA_HAS_EXTRA_FIELDS"
+  "PSAPI_VERSION=2"
+  "WIN32"
+  "_SECURE_ATL"
+  "WINAPI_FAMILY=WINAPI_FAMILY_DESKTOP_APP"
+)
+
+# build/config/win:winver:
+#list(APPEND allocator_core_defines
+  #"NTDDI_VERSION=NTDDI_WIN10_NI"
+  #"_WIN32_WINNT=0x0A00"
+  #"WINVER=0x0A00"
+#)
+
 add_library(allocator_core STATIC "")
 
 target_sources(allocator_core PRIVATE ${allocator_core_sources})
@@ -524,6 +568,28 @@ rvm_add_TARGET_compile_option("allocator_core" "-Wno-float-conversion")
     #configs += _add_configs
     #configs += [ ":dependants_extra_warnings" ]
 
+# build/config/win:runtime_library:
+list(APPEND allocator_base_defines
+  "__STD_C"
+  "_CRT_RAND_S"
+  "_CRT_SECURE_NO_DEPRECATE"
+  "_SCL_SECURE_NO_DEPRECATE"
+  "_ATL_NO_OPENGL"
+  "_WINDOWS"
+  "CERT_CHAIN_PARA_HAS_EXTRA_FIELDS"
+  "PSAPI_VERSION=2"
+  "WIN32"
+  "_SECURE_ATL"
+  "WINAPI_FAMILY=WINAPI_FAMILY_DESKTOP_APP"
+)
+
+# build/config/win:winver:
+#list(APPEND allocator_base_defines
+  #"NTDDI_VERSION=NTDDI_WIN10_NI"
+  #"_WIN32_WINNT=0x0A00"
+  #"WINVER=0x0A00"
+#)
+
 add_library(allocator_base STATIC "")
 
 target_sources(allocator_base PRIVATE ${allocator_base_sources})
@@ -691,6 +757,29 @@ rvm_add_TARGET_compile_option("allocator_base" "-Wno-float-conversion")
       #":buildflags",
     #]
 
+set(allocator_shim_defines "")
+# build/config/win:runtime_library:
+list(APPEND allocator_shim_defines
+  "__STD_C"
+  "_CRT_RAND_S"
+  "_CRT_SECURE_NO_DEPRECATE"
+  "_SCL_SECURE_NO_DEPRECATE"
+  "_ATL_NO_OPENGL"
+  "_WINDOWS"
+  "CERT_CHAIN_PARA_HAS_EXTRA_FIELDS"
+  "PSAPI_VERSION=2"
+  "WIN32"
+  "_SECURE_ATL"
+  "WINAPI_FAMILY=WINAPI_FAMILY_DESKTOP_APP"
+)
+
+# build/config/win:winver:
+#list(APPEND allocator_shim_defines
+  #"NTDDI_VERSION=NTDDI_WIN10_NI"
+  #"_WIN32_WINNT=0x0A00"
+  #"WINVER=0x0A00"
+#)
+
 add_library(allocator_shim STATIC "")
 
 target_sources(allocator_shim PRIVATE ${allocator_shim_sources})
@@ -701,6 +790,8 @@ target_INCLUDE_DIRECTORIES(allocator_shim
   "${CMAKE_CURRENT_SOURCE_DIR}/.."
   "${CMAKE_SOURCE_DIR}/OpenFinRVM/OpenFinRVM_utilities_lib/ThirdParty/Chromium/gen/base/allocator/partition_allocator/src"
 )
+
+target_compile_definitions(partition_allocator_raw_ptr PUBLIC ${allocator_shim_defines})
 
 if(APPLE)
   target_link_libraries(allocator_shim PRIVATE
