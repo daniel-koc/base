@@ -297,7 +297,6 @@ bool Process::SetPriority(Priority priority) {
 #endif  // (_WIN32_WINNT >= 0x0602)
 
   return (::SetPriorityClass(Handle(), priority_class) != 0);
-  return false;
 }
 
 int Process::GetOSPriority() const {

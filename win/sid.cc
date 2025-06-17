@@ -138,9 +138,10 @@ Sid Sid::FromNamedCapability(const std::wstring& capability_name) {
   return FromSubAuthorities(SECURITY_APP_PACKAGE_AUTHORITY, std::size(rids),
                             rids);
 #endif
+#if (_WIN32_WINNT >= _WIN32_WINNT_WIN10)
   DCHECK_GE(GetVersion(), Version::WIN10);
 
-  /*typedef decltype(
+  typedef decltype(
       ::DeriveCapabilitySidsFromName)* DeriveCapabilitySidsFromNameFunc;
   static const DeriveCapabilitySidsFromNameFunc derive_capability_sids =
       []() -> DeriveCapabilitySidsFromNameFunc {
@@ -152,7 +153,8 @@ Sid Sid::FromNamedCapability(const std::wstring& capability_name) {
         ::GetProcAddress(module, "DeriveCapabilitySidsFromName"));
   }();
   if (!derive_capability_sids)
-    return Sid(WellKnownSid::kNull);*/
+    return Sid(WellKnownSid::kNull);
+#endif  // (_WIN32_WINNT >= _WIN32_WINNT_WIN10)
 
   // Pre-reserve some space for SID deleters.
   std::vector<ScopedLocalAlloc> deleter_list;
@@ -163,11 +165,13 @@ Sid Sid::FromNamedCapability(const std::wstring& capability_name) {
   PSID* capability_sids = nullptr;
   DWORD capability_sid_count = 0;
 
-  /*if (!derive_capability_sids(capability_name.c_str(), &capability_groups,
+#if (_WIN32_WINNT >= _WIN32_WINNT_WIN10)
+  if (!derive_capability_sids(capability_name.c_str(), &capability_groups,
                               &capability_group_count, &capability_sids,
                               &capability_sid_count)) {
     return Sid(WellKnownSid::kNull);
-  }*/
+  }
+#endif  // (_WIN32_WINNT >= _WIN32_WINNT_WIN10)
 
   deleter_list.emplace_back(capability_groups);
   deleter_list.emplace_back(capability_sids);

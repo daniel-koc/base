@@ -169,7 +169,6 @@ bool* GetRegisteredWithManagementStateStorage() {
 
 // TODO (crbug/1300219): return a DSREG_JOIN_TYPE* instead of bool*.
 bool* GetAzureADJoinStateStorage() {
-#if 0
   static bool state = []() {
     base::ElapsedTimer timer;
 
@@ -182,6 +181,7 @@ bool* GetAzureADJoinStateStorage() {
     if (!netapi32.is_valid())
       return false;
 
+#if(_WIN32_WINNT >= _WIN32_WINNT_WIN10)
     const auto net_get_aad_join_information_function =
         reinterpret_cast<decltype(&::NetGetAadJoinInformation)>(
             netapi32.GetFunctionPointer("NetGetAadJoinInformation"));
@@ -204,11 +204,11 @@ bool* GetAzureADJoinStateStorage() {
     base::UmaHistogramTimes("EnterpriseCheck.AzureADJoinStatusCheckTime",
                             timer.Elapsed());
     return is_aad_joined;
+#else
+    return false;
+#endif  // (_WIN32_WINNT >= _WIN32_WINNT_WIN10)
   }();
   return &state;
-#else
-  return nullptr;
-#endif  // 0
 }
 
 NativeLibrary PinUser32Internal(NativeLibraryLoadError* error) {
@@ -228,7 +228,6 @@ NativeLibrary PinUser32Internal(NativeLibraryLoadError* error) {
 // it to always return UserInteractionMode_Touch which as per documentation
 // indicates tablet mode.
 bool IsWindows10OrGreaterTabletMode(HWND hwnd) {
-#if 0
   if (GetVersion() >= Version::WIN11) {
     // Only Win10 supports explicit tablet mode. On Win11,
     // get_UserInteractionMode always returns UserInteractionMode_Mouse, so
@@ -251,6 +250,7 @@ bool IsWindows10OrGreaterTabletMode(HWND hwnd) {
            IsDeviceUsedAsATablet(/*reason=*/nullptr);
   }
 
+#if 0
   ScopedHString view_settings_guid = ScopedHString::Create(
       RuntimeClass_Windows_UI_ViewManagement_UIViewSettings);
   Microsoft::WRL::ComPtr<IUIViewSettingsInterop> view_settings_interop;
@@ -280,7 +280,6 @@ bool IsWindows10OrGreaterTabletMode(HWND hwnd) {
 // it won't work if there are devices which expose keyboard interfaces which
 // are attached to the machine.
 bool IsKeyboardPresentOnSlate(HWND hwnd, std::string* reason) {
-#if 0
   bool result = false;
 
   if (CommandLine::ForCurrentProcess()->HasSwitch(
@@ -329,6 +328,7 @@ bool IsKeyboardPresentOnSlate(HWND hwnd, std::string* reason) {
   // 3. If step 1 and 2 fail then we check attached keyboards and return true
   //    if we find ACPI\* or HID\VID* keyboards.
 
+#if(WINVER >= 0x0602)
   using GetAutoRotationState = decltype(&::GetAutoRotationState);
   static const auto get_rotation_state = reinterpret_cast<GetAutoRotationState>(
       GetUser32FunctionPointer("GetAutoRotationState"));
@@ -348,6 +348,7 @@ bool IsKeyboardPresentOnSlate(HWND hwnd, std::string* reason) {
       result = true;
     }
   }
+#endif  // (WINVER >= 0x0602)
 
   const GUID KEYBOARD_CLASS_GUID = {
       0x4D36E96B,
@@ -396,9 +397,6 @@ bool IsKeyboardPresentOnSlate(HWND hwnd, std::string* reason) {
     }
   }
   return result;
-#else
-  return false;
-#endif  // 0
 }
 
 static bool g_crash_on_process_detach = false;
@@ -543,7 +541,6 @@ bool IsTabletDevice(std::string* reason, HWND hwnd) {
 // input configuration of the device and can be manually triggered by the user
 // independently from the hardware state.
 bool IsDeviceUsedAsATablet(std::string* reason) {
-#if 0
   // Once this is set, it shouldn't be overridden, and it should be the ultimate
   // return value, so that this method returns the same result whether or not
   // reason is NULL.
@@ -558,6 +555,7 @@ bool IsDeviceUsedAsATablet(std::string* reason) {
     }
   }
 
+#if(WINVER >= 0x0602)
   // If the device is docked, the user is treating the device as a PC.
   if (GetSystemMetrics(SM_SYSTEMDOCKED) != 0) {
     if (reason) {
@@ -568,11 +566,13 @@ bool IsDeviceUsedAsATablet(std::string* reason) {
       return false;
     }
   }
+#endif  // (WINVER >= 0x0602)
 
   // If the device is not supporting rotation, it's unlikely to be a tablet,
   // a convertible or a detachable.
   // See
   // https://msdn.microsoft.com/en-us/library/windows/desktop/dn629263(v=vs.85).aspx
+#if(WINVER >= 0x0602)
   using GetAutoRotationStateType = decltype(GetAutoRotationState)*;
   static const auto get_auto_rotation_state_func =
       reinterpret_cast<GetAutoRotationStateType>(
@@ -583,6 +583,7 @@ bool IsDeviceUsedAsATablet(std::string* reason) {
         (rotation_state & (AR_NOT_SUPPORTED | AR_LAPTOP | AR_NOSENSOR)) != 0)
       return ret.has_value() ? ret.value() : false;
   }
+#endif  // (WINVER >= 0x0602)
 
 #if (NTDDI_VERSION >= NTDDI_WIN8)
   // PlatformRoleSlate was added in Windows 8+.
@@ -607,10 +608,11 @@ bool IsDeviceUsedAsATablet(std::string* reason) {
 if (reason) {
     *reason += "Device role is not mobile or slate.\n";
   }
+#if (NTDDI_VERSION >= NTDDI_WIN8)
   return ret.has_value() ? ret.value() : is_tablet;
 #else
-  return false;
-#endif  // 0
+  return ret.has_value() ? ret.value() : false;
+#endif  // else (NTDDI_VERSION >= NTDDI_WIN8)
 }
 
 bool IsEnrolledToDomain() {
@@ -631,22 +633,20 @@ bool IsJoinedToAzureAD() {
 }
 
 bool IsUser32AndGdi32Available() {
-#if 0
   static auto is_user32_and_gdi32_available = []() {
     // If win32k syscalls aren't disabled, then user32 and gdi32 are available.
+#if (_WIN32_WINNT >= 0x0602)
     PROCESS_MITIGATION_SYSTEM_CALL_DISABLE_POLICY policy = {};
     if (::GetProcessMitigationPolicy(GetCurrentProcess(),
                                      ProcessSystemCallDisablePolicy, &policy,
                                      sizeof(policy))) {
       return policy.DisallowWin32kSystemCalls == 0;
     }
+#endif  // (_WIN32_WINNT >= 0x0602)
 
     return true;
   }();
   return is_user32_and_gdi32_available;
-#else
-  return false;
-#endif  // 0
 }
 
 bool GetLoadedModulesSnapshot(HANDLE process, std::vector<HMODULE>* snapshot) {

@@ -240,6 +240,7 @@ namespace internal {
 
 void AssertMemoryPriority(HANDLE thread, int memory_priority) {
 #if DCHECK_IS_ON()
+#if (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
   static const auto get_thread_information_fn =
       reinterpret_cast<decltype(&::GetThreadInformation)>(::GetProcAddress(
           ::GetModuleHandle(L"Kernel32.dll"), "GetThreadInformation"));
@@ -253,6 +254,7 @@ void AssertMemoryPriority(HANDLE thread, int memory_priority) {
 
   DCHECK_EQ(memory_priority,
             static_cast<int>(memory_priority_information.MemoryPriority));
+#endif  // (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
 #endif
 }
 

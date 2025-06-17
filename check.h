@@ -256,9 +256,15 @@ class BASE_EXPORT NotReachedNoreturnError : public CheckError {
 
 #if DCHECK_IS_ON()
 
+#ifdef DCHECK
+#undef DCHECK
+#endif
 #define DCHECK(condition)                                                \
   LOGGING_CHECK_FUNCTION_IMPL(::logging::CheckError::DCheck(#condition), \
                               condition)
+#ifdef DPCHECK
+#undef DPCHECK
+#endif
 #define DPCHECK(condition)                                                \
   LOGGING_CHECK_FUNCTION_IMPL(::logging::CheckError::DPCheck(#condition), \
                               condition)
